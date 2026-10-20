@@ -2,7 +2,7 @@
 
 Đề tài thực tập tốt nghiệp – Hoàng Hải Đăng (DTC235200186, CNTT-K22H) – Công ty Cổ phần Công nghệ TFL.
 
-**Công nghệ:** Node.js · Express · React (Vite) · MySQL · Groq API (Llama 3.3)
+**Công nghệ:** Node.js · Express · React (Vite) · MySQL · Groq API (gpt-oss-120b)
 
 ## Chức năng chính
 
@@ -17,6 +17,8 @@
 | **Chatbot AI tư vấn bán hàng** | **AI dự báo nhu cầu**, **AI phân khúc khách hàng (RFM)**, lịch sử chatbot |
 
 ## Cài đặt & chạy
+
+> 📘 **Người mới / máy chưa có gì:** xem [HUONG-DAN-CAI-DAT.md](HUONG-DAN-CAI-DAT.md) — có sẵn `setup.bat`, `start.bat`, `test.bat` chạy bằng nhấp đúp.
 
 Yêu cầu: Node.js ≥ 18, MySQL 8 (hoặc XAMPP/MariaDB).
 

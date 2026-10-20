@@ -3,7 +3,7 @@
 ## 1. Groq & Llama
 
 - **Groq** cung cấp API suy luận LLM tốc độ rất cao (chip LPU), định dạng **tương thích OpenAI Chat Completions**.
-- Mô hình dùng: `llama-3.3-70b-versatile` (Meta Llama, mã nguồn mở) – hỗ trợ tiếng Việt tốt.
+- Mô hình mặc định: `openai/gpt-oss-120b` (mã nguồn mở, tiếng Việt tốt). Ban đầu dự án dùng Llama 3.3 70B nhưng Groq đã ngừng cung cấp; có thể đổi mô hình qua biến `GROQ_MODEL` mà không sửa code.
 - Endpoint: `POST https://api.groq.com/openai/v1/chat/completions`, xác thực bằng `GROQ_API_KEY`.
 
 Mã gọi API nằm ở `server/src/services/groq.js`:

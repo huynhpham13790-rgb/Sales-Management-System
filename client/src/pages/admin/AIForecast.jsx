@@ -35,7 +35,7 @@ export default function AIForecast() {
         <select value={horizon} onChange={(e) => setHorizon(Number(e.target.value))}>
           <option value={7}>7 ngày tới</option><option value={14}>14 ngày tới</option><option value={30}>30 ngày tới</option>
         </select>
-        <button className="btn" onClick={askAI} disabled={loadingAI}>{loadingAI ? 'AI đang phân tích...' : 'Nhận định từ AI (Llama)'}</button>
+        <button className="btn" onClick={askAI} disabled={loadingAI}>{loadingAI ? 'AI đang phân tích...' : 'Nhận định từ AI'}</button>
       </div>
       <p className="muted">Dự báo dựa trên doanh số 60 ngày gần nhất (trung bình động có trọng số + xu hướng tuyến tính).</p>
       {error && <p className="error">{error}</p>}

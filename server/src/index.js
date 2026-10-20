@@ -28,7 +28,7 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/ai', aiRoutes);
 
 app.use((err, _req, res, _next) => {
-  console.error(err);
+  if (!err.status) console.error(err);
   res.status(err.status || 500).json({ message: err.status ? err.message : 'Lỗi máy chủ' });
 });
 

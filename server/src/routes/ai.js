@@ -8,7 +8,7 @@ import { demandForecast, customerSegments, SEGMENT_INFO } from '../services/anal
 const r = Router();
 const vnd = (n) => Number(n).toLocaleString('vi-VN') + 'đ';
 
-r.get('/status', (_req, res) => res.json({ groq: groqEnabled(), model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile' }));
+r.get('/status', (_req, res) => res.json({ groq: groqEnabled(), model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b' }));
 
 // ===== Dự báo nhu cầu =====
 r.get('/forecast', requireStaff, wrap(async (req, res) => {
