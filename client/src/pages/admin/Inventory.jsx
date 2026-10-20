@@ -8,14 +8,13 @@ export default function Inventory() {
   const [form, setForm] = useState({ product_id: '', change_qty: '', reason: '' });
   const [msg, setMsg] = useState('');
 
+  // Tải lại cả danh sách sản phẩm để ô chọn hiển thị đúng tồn kho mới sau khi nhập/xuất
   const load = () => {
     api('/inventory/low-stock').then(setLow);
     api('/inventory/logs').then(setLogs);
-  };
-  useEffect(() => {
-    load();
     api('/products?all=1&limit=100').then((d) => setProducts(d.items));
-  }, []);
+  };
+  useEffect(() => { load(); }, []);
 
   const submit = async (e) => {
     e.preventDefault();
@@ -33,15 +32,18 @@ export default function Inventory() {
       <div className="layout-2col">
         <form className="card form" onSubmit={submit}>
           <h2>Nhập / xuất kho</h2>
-          <label>Sản phẩm</label>
-          <select required value={form.product_id} onChange={(e) => setForm({ ...form, product_id: e.target.value })}>
-            <option value="">-- Chọn sản phẩm --</option>
-            {products.map((p) => <option key={p.id} value={p.id}>{p.name} (tồn {p.stock})</option>)}
-          </select>
-          <label>Số lượng (dương = nhập, âm = xuất)</label>
-          <input type="number" required value={form.change_qty} onChange={(e) => setForm({ ...form, change_qty: e.target.value })} />
-          <label>Lý do</label>
-          <input value={form.reason} placeholder="VD: Nhập hàng từ NCC, hàng lỗi..." onChange={(e) => setForm({ ...form, reason: e.target.value })} />
+          <label>Sản phẩm
+            <select required value={form.product_id} onChange={(e) => setForm({ ...form, product_id: e.target.value })}>
+              <option value="">-- Chọn sản phẩm --</option>
+              {products.map((p) => <option key={p.id} value={p.id}>{p.name} (tồn {p.stock})</option>)}
+            </select>
+          </label>
+          <label>Số lượng (dương = nhập, âm = xuất)
+            <input type="number" required value={form.change_qty} onChange={(e) => setForm({ ...form, change_qty: e.target.value })} />
+          </label>
+          <label>Lý do
+            <input value={form.reason} placeholder="VD: Nhập hàng từ NCC, hàng lỗi..." onChange={(e) => setForm({ ...form, reason: e.target.value })} />
+          </label>
           {msg && <p className="muted">{msg}</p>}
           <button className="btn">Cập nhật</button>
         </form>

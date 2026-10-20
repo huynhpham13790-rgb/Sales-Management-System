@@ -59,7 +59,7 @@ export default function Home() {
           {data.pages > 1 && (
             <div className="pagination">
               {Array.from({ length: data.pages }, (_, i) => (
-                <button key={i} className={filters.page === i + 1 ? 'active' : ''} onClick={() => setFilters((f) => ({ ...f, page: i + 1 }))}>{i + 1}</button>
+                <button key={i} className={filters.page === i + 1 ? 'active' : ''} onClick={() => { setFilters((f) => ({ ...f, page: i + 1 })); window.scrollTo({ top: 0, behavior: 'smooth' }); }}>{i + 1}</button>
               ))}
             </div>
           )}

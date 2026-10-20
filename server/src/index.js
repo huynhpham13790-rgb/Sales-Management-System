@@ -28,6 +28,8 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/ai', aiRoutes);
 
 app.use((err, _req, res, _next) => {
+  // Trùng khóa UNIQUE (tên danh mục, mã giảm giá, email...) → báo lỗi rõ ràng thay vì "Lỗi máy chủ"
+  if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: 'Dữ liệu đã tồn tại (trùng tên hoặc mã)' });
   if (!err.status) console.error(err);
   res.status(err.status || 500).json({ message: err.status ? err.message : 'Lỗi máy chủ' });
 });

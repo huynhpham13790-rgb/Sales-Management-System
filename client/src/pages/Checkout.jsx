@@ -56,15 +56,16 @@ export default function Checkout() {
     <div className="layout-2col">
       <form className="card form" onSubmit={submit}>
         <h1>Thông tin giao hàng</h1>
-        <label>Họ tên</label><input required value={form.customer_name} onChange={set('customer_name')} />
-        <label>Số điện thoại</label><input required pattern="0\d{9}" title="10 số, bắt đầu bằng 0" value={form.phone} onChange={set('phone')} />
-        <label>Địa chỉ</label><input required value={form.address} onChange={set('address')} />
-        <label>Ghi chú</label><textarea value={form.note} onChange={set('note')} />
-        <label>Phương thức thanh toán</label>
-        <select value={form.payment_method} onChange={set('payment_method')}>
-          <option value="cod">Thanh toán khi nhận hàng (COD)</option>
-          <option value="bank">Chuyển khoản ngân hàng</option>
-        </select>
+        <label>Họ tên<input required value={form.customer_name} onChange={set('customer_name')} /></label>
+        <label>Số điện thoại<input required pattern="0\d{9}" title="10 số, bắt đầu bằng 0" value={form.phone} onChange={set('phone')} /></label>
+        <label>Địa chỉ<input required value={form.address} onChange={set('address')} /></label>
+        <label>Ghi chú<textarea value={form.note} onChange={set('note')} /></label>
+        <label>Phương thức thanh toán
+          <select value={form.payment_method} onChange={set('payment_method')}>
+            <option value="cod">Thanh toán khi nhận hàng (COD)</option>
+            <option value="bank">Chuyển khoản ngân hàng</option>
+          </select>
+        </label>
         {form.payment_method === 'bank' && <p className="ai-note">Chuyển khoản tới STK 0123456789 – Ngân hàng ABC, nội dung: mã đơn hàng.</p>}
         {error && <p className="error">{error}</p>}
         <button className="btn" disabled={submitting}>{submitting ? 'Đang xử lý...' : 'Đặt hàng'}</button>

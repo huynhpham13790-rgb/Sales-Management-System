@@ -11,7 +11,10 @@ export default function ChatWidget() {
     { role: 'assistant', content: 'Xin chào! Mình là trợ lý AI của SalesFlow. Bạn đang tìm sản phẩm gì?' },
   ]);
   const endRef = useRef(null);
-  useEffect(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }), [messages, open]);
+  // Bọc trong {} để effect không trả về giá trị: Chrome mới cho scrollIntoView trả về Promise, React coi đó là hàm cleanup và làm sập trang
+  useEffect(() => {
+    endRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages, open]);
 
   const send = async (e) => {
     e.preventDefault();

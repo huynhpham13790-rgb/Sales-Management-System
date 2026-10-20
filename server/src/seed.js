@@ -66,7 +66,8 @@ const categories = [['Điện thoại', 'dien-thoai'], ['Laptop', 'laptop'], ['M
   ['Phụ kiện', 'phu-kien'], ['Đồng hồ thông minh', 'dong-ho'], ['Âm thanh', 'am-thanh']];
 await conn.query(`INSERT INTO categories (name, slug) VALUES ?`, [categories]);
 
-const img = (seed) => `https://picsum.photos/seed/${seed}/400/300`;
+// Ảnh thật lưu trong client/public/products/<id>.jpg (nguồn: CREDITS.md cùng thư mục)
+const img = (i) => `/products/${i + 1}.jpg`;
 // [danh mục, tên, mô tả, giá, tồn kho, ngưỡng cảnh báo, độ phổ biến, xu hướng (+ tăng, - giảm)]
 const products = [
   [1, 'iPhone 15 128GB', 'Chip A16 Bionic, camera 48MP, Dynamic Island, cổng USB-C.', 19990000, 25, 5, 5, 0],
@@ -78,11 +79,11 @@ const products = [
   [1, 'Google Pixel 8a', 'Chip Tensor G3, camera AI, 7 năm cập nhật.', 11990000, 6, 3, 2, 1],
   [2, 'MacBook Air M2 13"', 'Chip Apple M2, RAM 8GB, SSD 256GB, pin 18 giờ.', 24990000, 10, 3, 3, 0],
   [2, 'MacBook Pro M3 14"', 'Chip M3, RAM 16GB, màn Liquid Retina XDR.', 39990000, 5, 2, 1, 1],
-  [2, 'Dell Inspiron 15 3530', 'Core i5 Gen 13, RAM 16GB, SSD 512GB.', 15990000, 12, 4, 3, 0],
-  [2, 'Asus TUF Gaming F15', 'Core i7, RTX 4050, màn 144Hz.', 22990000, 4, 3, 3, 1],
-  [2, 'Lenovo IdeaPad Slim 5', 'Ryzen 7 7730U, RAM 16GB, màn 2.2K.', 17490000, 9, 3, 2, 0],
-  [2, 'HP Victus 16', 'Core i5, RTX 3050, màn 144Hz 16.1".', 19990000, 7, 3, 2, -1],
-  [2, 'Acer Aspire 7', 'Ryzen 5, GTX 1650, laptop gaming giá rẻ.', 14990000, 3, 3, 2, -1],
+  [2, 'Dell Inspiron 15 3530', 'Laptop văn phòng, học tập Core i5 Gen 13, RAM 16GB, SSD 512GB (card tích hợp).', 15990000, 12, 4, 3, 0],
+  [2, 'Asus TUF Gaming F15', 'Laptop gaming Core i7, card RTX 4050, màn 144Hz – chơi game, đồ họa.', 22990000, 4, 3, 3, 1],
+  [2, 'Lenovo IdeaPad Slim 5', 'Laptop mỏng nhẹ văn phòng Ryzen 7 7730U, RAM 16GB, màn 2.2K (card tích hợp).', 17490000, 9, 3, 2, 0],
+  [2, 'HP Victus 16', 'Laptop gaming Core i5, card RTX 3050, màn 144Hz 16.1" – chơi game mượt.', 19990000, 7, 3, 2, -1],
+  [2, 'Acer Aspire 7', 'Laptop gaming giá rẻ Ryzen 5, card GTX 1650 – chơi game phổ thông.', 14990000, 3, 3, 2, -1],
   [3, 'iPad Gen 10 Wi-Fi 64GB', 'Màn 10.9", chip A14, hỗ trợ Apple Pencil.', 9990000, 20, 5, 3, 0],
   [3, 'iPad Air M2 11"', 'Chip M2, màn Liquid Retina, Touch ID.', 16990000, 8, 3, 2, 1],
   [3, 'Samsung Galaxy Tab S9 FE', 'Màn 10.9", kháng nước IP68, kèm bút S Pen.', 9990000, 15, 4, 2, 0],
@@ -110,7 +111,7 @@ const products = [
 ];
 await conn.query(
   `INSERT INTO products (category_id, name, description, price, stock, low_stock_threshold, image_url, created_at) VALUES ?`,
-  [products.map(([c, n, d, p, st, th], i) => [c, n, d, p, st, th, img('sf' + i), new Date(Date.now() - 190 * DAY)])]
+  [products.map(([c, n, d, p, st, th], i) => [c, n, d, p, st, th, img(i), new Date(Date.now() - 190 * DAY)])]
 );
 await conn.query(`INSERT INTO inventory_logs (product_id, change_qty, reason, created_by, created_at) VALUES ?`,
   [products.map((p, i) => [i + 1, p[4] + 20, 'Nhập hàng đầu kỳ', 3, new Date(Date.now() - 190 * DAY)])]);

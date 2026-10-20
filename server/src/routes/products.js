@@ -42,9 +42,11 @@ r.get('/', optionalAuth, wrap(async (req, res) => {
   res.json({ items, total, page, pages: Math.ceil(total / limit) });
 }));
 
-r.get('/:id', wrap(async (req, res) => {
+r.get('/:id', optionalAuth, wrap(async (req, res) => {
   const [product] = await query(`${BASE_SELECT} WHERE p.id = ?`, [req.params.id]);
-  if (!product) throw httpError(404, 'Không tìm thấy sản phẩm');
+  // Sản phẩm đã ẩn chỉ nhân viên mới xem được
+  const isStaff = ['admin', 'staff'].includes(req.user?.role);
+  if (!product || (!product.is_active && !isStaff)) throw httpError(404, 'Không tìm thấy sản phẩm');
   const reviews = await query(`SELECT rv.*, u.name AS user_name FROM reviews rv JOIN users u ON u.id = rv.user_id
     WHERE rv.product_id = ? ORDER BY rv.created_at DESC`, [req.params.id]);
   // Gợi ý sản phẩm "thường được mua cùng" dựa trên các đơn hàng chứa sản phẩm này

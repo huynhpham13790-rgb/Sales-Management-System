@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { vnd } from '../api';
 import { useCart } from '../context/CartContext';
+import QtyInput from '../components/QtyInput';
 
 export default function Cart() {
   const { items, update, remove, subtotal } = useCart();
@@ -15,7 +16,7 @@ export default function Cart() {
             <tr key={i.id}>
               <td><Link to={`/product/${i.id}`}>{i.name}</Link></td>
               <td>{vnd(i.price)}</td>
-              <td><input type="number" min="1" max={i.stock} value={i.quantity} onChange={(e) => update(i.id, Number(e.target.value))} style={{ width: 70 }} /></td>
+              <td><QtyInput value={i.quantity} max={i.stock} onChange={(n) => update(i.id, n)} style={{ width: 70 }} aria-label={`Số lượng ${i.name}`} /></td>
               <td>{vnd(i.price * i.quantity)}</td>
               <td><button className="btn-link danger" onClick={() => remove(i.id)}>Xóa</button></td>
             </tr>

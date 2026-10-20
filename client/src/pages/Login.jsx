@@ -19,8 +19,8 @@ export default function Login() {
   return (
     <form className="card form narrow" onSubmit={submit}>
       <h1>Đăng nhập</h1>
-      <label>Email</label><input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-      <label>Mật khẩu</label><input type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} />
+      <label>Email<input type="email" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} /></label>
+      <label>Mật khẩu<input type="password" required value={form.password} onChange={(e) => setForm({ ...form, password: e.target.value })} /></label>
       {error && <p className="error">{error}</p>}
       <button className="btn">Đăng nhập</button>
       <p className="muted">Chưa có tài khoản? <Link to="/register">Đăng ký</Link></p>

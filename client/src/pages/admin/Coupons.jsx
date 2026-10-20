@@ -23,7 +23,7 @@ export default function Coupons() {
     } catch (err) { setError(err.message); }
   };
   const del = async (c) => { if (window.confirm(`Xóa mã ${c.code}?`)) { await api(`/coupons/${c.id}`, { method: 'DELETE' }); load(); } };
-  const edit = (c) => setForm({ ...c, is_active: !!c.is_active, expires_at: c.expires_at ? c.expires_at.slice(0, 10) : '' });
+  const edit = (c) => setForm({ ...c, is_active: !!c.is_active, expires_at: c.expires_date || '' });
 
   return (
     <>
@@ -52,7 +52,7 @@ export default function Coupons() {
               <td>{c.type === 'percent' ? `${c.value}%` : vnd(c.value)}</td>
               <td>{vnd(c.min_order)}</td>
               <td>{c.used_count}{c.max_uses ? ` / ${c.max_uses}` : ''}</td>
-              <td>{c.expires_at ? new Date(c.expires_at).toLocaleDateString('vi-VN') : 'Không'}</td>
+              <td>{c.expires_date ? c.expires_date.split('-').reverse().join('/') : 'Không'}</td>
               <td>{c.is_active ? 'Đang chạy' : <span className="muted">Tắt</span>}</td>
               <td className="nowrap"><button className="btn-link" onClick={() => edit(c)}>Sửa</button><button className="btn-link danger" onClick={() => del(c)}>Xóa</button></td>
             </tr>

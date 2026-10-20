@@ -124,7 +124,7 @@ Mở 2 cửa sổ *Command Prompt*:
 
 ### Kiểm tra hệ thống hoạt động đúng
 Khi web đang chạy, nhấp đúp **`test.bat`** (hoặc trong thư mục `server` gõ `npm run test-api`).
-Kết quả mong đợi ở cuối: **`Kết quả: 26 đạt, 0 lỗi`**.
+Kết quả mong đợi ở cuối: **`Kết quả: 29 đạt, 0 lỗi`**.
 
 ### Làm mới dữ liệu về ban đầu
 Trong thư mục `server` gõ `npm run seed`. ⚠ Lệnh này **xóa toàn bộ dữ liệu** đang có và tạo lại dữ liệu mẫu.

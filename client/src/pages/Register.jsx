@@ -17,11 +17,11 @@ export default function Register() {
   return (
     <form className="card form narrow" onSubmit={submit}>
       <h1>Đăng ký</h1>
-      <label>Họ tên</label><input required value={form.name} onChange={set('name')} />
-      <label>Email</label><input type="email" required value={form.email} onChange={set('email')} />
-      <label>Mật khẩu</label><input type="password" required minLength={6} value={form.password} onChange={set('password')} />
-      <label>Số điện thoại</label><input value={form.phone} onChange={set('phone')} />
-      <label>Địa chỉ</label><input value={form.address} onChange={set('address')} />
+      <label>Họ tên<input required value={form.name} onChange={set('name')} /></label>
+      <label>Email<input type="email" required value={form.email} onChange={set('email')} /></label>
+      <label>Mật khẩu<input type="password" required minLength={6} value={form.password} onChange={set('password')} /></label>
+      <label>Số điện thoại<input value={form.phone} onChange={set('phone')} /></label>
+      <label>Địa chỉ<input value={form.address} onChange={set('address')} /></label>
       {error && <p className="error">{error}</p>}
       <button className="btn">Tạo tài khoản</button>
       <p className="muted">Đã có tài khoản? <Link to="/login">Đăng nhập</Link></p>

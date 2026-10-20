@@ -21,8 +21,8 @@ export default function TrackOrder() {
     <>
       <form className="card form narrow" onSubmit={search}>
         <h1>Tra cứu đơn hàng</h1>
-        <label>Mã đơn hàng</label><input required value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.trim() })} />
-        <label>Số điện thoại đặt hàng</label><input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.trim() })} />
+        <label>Mã đơn hàng<input required value={form.code} onChange={(e) => setForm({ ...form, code: e.target.value.trim() })} /></label>
+        <label>Số điện thoại đặt hàng<input required value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value.trim() })} /></label>
         {error && <p className="error">{error}</p>}
         <button className="btn">Tra cứu</button>
       </form>

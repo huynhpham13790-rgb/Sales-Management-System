@@ -21,10 +21,10 @@ export default function Profile() {
     <form className="card form narrow" onSubmit={submit}>
       <h1>Tài khoản</h1>
       <p className="muted">{user.email}</p>
-      <label>Họ tên</label><input required value={form.name} onChange={set('name')} />
-      <label>Số điện thoại</label><input value={form.phone} onChange={set('phone')} />
-      <label>Địa chỉ</label><input value={form.address} onChange={set('address')} />
-      <label>Mật khẩu mới (để trống nếu không đổi)</label><input type="password" value={form.password} onChange={set('password')} />
+      <label>Họ tên<input required value={form.name} onChange={set('name')} /></label>
+      <label>Số điện thoại<input value={form.phone} onChange={set('phone')} /></label>
+      <label>Địa chỉ<input value={form.address} onChange={set('address')} /></label>
+      <label>Mật khẩu mới (để trống nếu không đổi)<input type="password" value={form.password} onChange={set('password')} /></label>
       {msg && <p className="muted">{msg}</p>}
       <button className="btn">Lưu</button>
     </form>

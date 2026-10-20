@@ -106,6 +106,21 @@ await test('Dashboard', async () => {
   const r = await call('/dashboard/summary?days=30', { token: admin }); expect(r.data.daily, 'thiếu dữ liệu');
   return `doanh thu 30 ngày ${Number(r.data.revenue).toLocaleString('vi-VN')}đ, ${r.data.orders} đơn`;
 });
+await test('Trùng tên danh mục báo 409 rõ ràng', async () => {
+  const r = await call('/categories', { method: 'POST', token: admin, body: { name: 'Laptop' } });
+  expect(r.status === 409, `mong đợi 409, nhận ${r.status}`);
+});
+await test('Sản phẩm đã ẩn không xem được từ cửa hàng', async () => {
+  const p = await call('/products', { method: 'POST', token: admin, body: { name: 'SP ẩn test', price: 1000, is_active: false } });
+  const r = await call(`/products/${p.data.id}`);
+  await call(`/products/${p.data.id}`, { method: 'DELETE', token: admin });
+  expect(r.status === 404, `mong đợi 404, nhận ${r.status}`);
+});
+await test('Lọc đơn theo khoảng ngày', async () => {
+  const today = new Date().toISOString().slice(0, 10);
+  const r = await call(`/orders?from=${today}&to=${today}`, { token: admin });
+  expect(Array.isArray(r.data), 'lỗi'); return `${r.data.length} đơn hôm nay`;
+});
 await test('Xuất CSV đơn hàng', async () => {
   const r = await call('/orders/export/csv', { token: admin }); expect(String(r.data).includes('Mã đơn'), 'CSV lỗi');
 });

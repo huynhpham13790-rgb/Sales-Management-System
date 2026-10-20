@@ -48,3 +48,20 @@ COMMIT   (lỗi bất kỳ → ROLLBACK)
 | Khách chưa mua sản phẩm gửi đánh giá | 403 “cần mua và nhận sản phẩm” |
 | Customer gọi API admin | 403 |
 | Không có GROQ_API_KEY | Chatbot/dự báo vẫn hoạt động ở chế độ dự phòng |
+
+Kiểm thử tự động: `npm run test-api` (29 kịch bản, gồm cả AI).
+
+## 9. Lỗi phát hiện khi kiểm thử giao diện (20/10/2026) và cách sửa
+
+| # | Mức độ | Lỗi | Cách sửa |
+|---|---|---|---|
+| 1 | Nghiêm trọng | Gửi tin nhắn chatbot làm **trắng toàn trang** (Chrome mới cho `scrollIntoView` trả về Promise, React coi là hàm cleanup) | Bọc thân `useEffect` trong `{}` (`ChatWidget.jsx`) |
+| 2 | Trung bình | Chatbot trả lời câu hỏi nối tiếp ("cái rẻ nhất trong đó") sai, gợi ý sản phẩm lạc đề, trả lời bằng bảng markdown | Tìm sản phẩm theo cả câu hỏi trước, lọc từ dừng, chấm điểm; cấm bảng/markdown; chuẩn hóa ký tự gạch nối đặc biệt |
+| 3 | Trung bình | Sửa mã giảm giá làm **lùi hạn 1 ngày** mỗi lần lưu (lệch múi giờ); mã hết hạn từ 0h thay vì cuối ngày | Trả `expires_date` dạng chuỗi, lưu hạn `23:59:59` |
+| 4 | Trung bình | Trùng tên danh mục/mã giảm giá chỉ báo "Lỗi máy chủ" | Bắt `ER_DUP_ENTRY` → 409 "Dữ liệu đã tồn tại" |
+| 5 | Nhỏ | Sản phẩm đã ẩn vẫn xem được qua link trực tiếp | API trả 404 cho khách, chỉ nhân viên xem được |
+| 6 | Nhỏ | Đổi mật khẩu quá ngắn nhưng tên/SĐT vẫn bị lưu dở | Kiểm tra mật khẩu trước khi cập nhật |
+| 7 | Nhỏ | Ô số lượng không xóa trắng được (gõ "5" thành "15") | Component `QtyInput` cho phép nhập tạm, chốt khi rời ô |
+| 8 | Nhỏ | Nhãn form không gắn với ô nhập (bấm nhãn không focus, trình đọc màn hình không đọc được) | Bọc `input` trong `label` |
+| 9 | Nhỏ | Trang Kho: ô chọn sản phẩm không cập nhật số tồn sau khi nhập kho | Tải lại danh sách sản phẩm sau mỗi lần điều chỉnh |
+| 10 | Nhỏ | Nhận định AI còn ký tự `*nghiêng*`; chuyển trang sản phẩm không cuộn lên đầu | Lọc markdown; cuộn lên đầu khi đổi trang |

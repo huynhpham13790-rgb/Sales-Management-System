@@ -97,7 +97,8 @@ textarea { resize: vertical; }
 
 .form { display: flex; flex-direction: column; gap: 8px; }
 .form.narrow { max-width: 420px; margin: 24px auto; }
-.form label { font-size: .88rem; color: var(--muted); }
+.form label { font-size: .88rem; color: var(--muted); display: flex; flex-direction: column; gap: 4px; }
+.form label > input, .form label > select, .form label > textarea { font-size: 1rem; color: var(--text); }
 .grid-form { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
 .grid-form h2 { grid-column: 1 / -1; }
 .grid-form label { display: flex; flex-direction: column; gap: 4px; }

@@ -43,19 +43,36 @@ r.get('/segments', requireStaff, wrap(async (req, res) => {
 }));
 
 // ===== Chatbot hỗ trợ bán hàng =====
-async function catalogContext(question) {
-  const words = question.toLowerCase().split(/\s+/).filter((w) => w.length > 2).slice(0, 6);
-  let products = [];
-  if (words.length) {
-    products = await query(`SELECT p.id, p.name, p.price, p.stock, p.description, c.name AS category FROM products p
-      LEFT JOIN categories c ON c.id = p.category_id WHERE p.is_active = 1 AND (${words.map(() => '(p.name LIKE ? OR c.name LIKE ? OR p.description LIKE ?)').join(' OR ')})
-      LIMIT 8`, words.flatMap((w) => [`%${w}%`, `%${w}%`, `%${w}%`]));
+// Từ phổ biến không giúp tìm sản phẩm
+const STOPWORDS = new Set(['shop', 'cho', 'mình', 'tôi', 'bạn', 'có', 'không', 'nào', 'cái', 'con', 'chiếc', 'loại', 'giá',
+  'bao', 'nhiêu', 'trong', 'đó', 'này', 'kia', 'thì', 'là', 'và', 'hay', 'hoặc', 'với', 'của', 'được', 'muốn', 'mua',
+  'cần', 'tìm', 'tư', 'vấn', 'giúp', 'nhất', 'rẻ', 'đắt', 'tốt', 'nên', 'gì', 'ạ', 'nhé', 'vậy', 'thế', 'còn', 'hàng', 'tầm']);
+const tokenize = (s) => s.toLowerCase().split(/[^\p{L}\p{N}]+/u).filter((w) => w.length > 1 && !STOPWORDS.has(w));
+
+// Tìm sản phẩm liên quan (retrieval): ghép câu hỏi hiện tại với các câu hỏi trước để hiểu câu nối tiếp
+// như "cái rẻ nhất trong đó", rồi chấm điểm theo số từ khóa khớp ở tên/danh mục/mô tả.
+async function catalogContext(message, history) {
+  const all = await query(`SELECT p.id, p.name, p.price, p.stock, p.description, c.name AS category FROM products p
+    LEFT JOIN categories c ON c.id = p.category_id WHERE p.is_active = 1`);
+  const previous = history.filter((h) => h.role === 'user').slice(-2).map((h) => String(h.content));
+  const weighted = [[tokenize(message), 2], ...previous.map((q) => [tokenize(q), 1])];
+  const scored = all.map((p) => {
+    const name = p.name.toLowerCase();
+    const cat = (p.category || '').toLowerCase();
+    const desc = (p.description || '').toLowerCase();
+    let score = 0;
+    for (const [words, w] of weighted) {
+      for (const word of words) score += w * ((name.includes(word) ? 3 : 0) + (cat.includes(word) ? 2 : 0) + (desc.includes(word) ? 1 : 0));
+    }
+    return { ...p, score };
+  });
+  const matched = scored.filter((p) => p.score > 0).sort((a, b) => b.score - a.score).slice(0, 10);
+  // Sắp theo giá để AI so sánh rẻ/đắt chính xác hơn
+  if (matched.length) {
+    // Chỉ coi là khớp thật (để gợi ý link) khi từ khóa trùng tên hoặc danh mục, không chỉ trùng mô tả
+    return { products: matched.sort((a, b) => a.price - b.price), matched: matched[0].score >= 4 };
   }
-  if (!products.length) {
-    products = await query(`SELECT p.id, p.name, p.price, p.stock, p.description, c.name AS category FROM products p
-      LEFT JOIN categories c ON c.id = p.category_id WHERE p.is_active = 1 ORDER BY p.created_at DESC LIMIT 12`);
-  }
-  return products;
+  return { products: all.slice(0, 12), matched: false };
 }
 
 function fallbackAnswer(question, products) {
@@ -71,10 +88,10 @@ r.post('/chat', optionalAuth, wrap(async (req, res) => {
   const message = String(req.body.message || '').trim().slice(0, 500);
   if (!message) throw httpError(400, 'Tin nhắn trống');
   const history = Array.isArray(req.body.history) ? req.body.history.slice(-6) : [];
-  const products = await catalogContext(message);
-  const catalog = products.map((p) => `- [${p.id}] ${p.name} (${p.category}) giá ${vnd(p.price)}, tồn ${p.stock}: ${p.description}`).join('\n');
+  const { products, matched } = await catalogContext(message, history);
+  const catalog = products.map((p) => `- ${p.name} (${p.category}) giá ${vnd(p.price)}, ${p.stock > 0 ? `còn ${p.stock}` : 'hết hàng'}: ${p.description}`).join('\n');
   let answer = await chat([
-    { role: 'system', content: `Bạn là trợ lý bán hàng thân thiện của cửa hàng SalesFlow. Chỉ tư vấn dựa trên danh sách sản phẩm dưới đây, không bịa sản phẩm/giá. Trả lời tiếng Việt, ngắn gọn (tối đa 120 từ).
+    { role: 'system', content: `Bạn là trợ lý bán hàng thân thiện của cửa hàng SalesFlow. Chỉ tư vấn dựa trên danh sách sản phẩm dưới đây, không bịa sản phẩm/giá/tính năng; chỉ coi một sản phẩm có tính năng nào đó khi mô tả của nó ghi rõ. Khi khách hỏi một loại sản phẩm, liệt kê ĐỦ mọi sản phẩm trong danh sách đáp ứng yêu cầu (đúng tính năng, đúng ngân sách). Khi so sánh giá, đối chiếu đúng giá trong danh sách. Chỉ nhắc chính sách cửa hàng khi khách hỏi về nó. Trả lời tiếng Việt, ngắn gọn (tối đa 120 từ), dạng câu văn hoặc gạch đầu dòng, KHÔNG dùng bảng hay markdown.
 Chính sách: giao hàng 2-5 ngày, miễn phí ship đơn từ 500.000đ, đổi trả 7 ngày, bảo hành 12 tháng, mã WELCOME10 giảm 10% đơn từ 1 triệu.
 Sản phẩm liên quan:\n${catalog}` },
     ...history.filter((h) => ['user', 'assistant'].includes(h.role)).map((h) => ({ role: h.role, content: String(h.content).slice(0, 500) })),
@@ -82,7 +99,10 @@ Sản phẩm liên quan:\n${catalog}` },
   ]);
   if (!answer) answer = fallbackAnswer(message, products);
   await query('INSERT INTO chat_logs (user_id, question, answer) VALUES (?,?,?)', [req.user?.id || null, message, answer]);
-  res.json({ answer, products: products.slice(0, 3).map(({ id, name, price }) => ({ id, name, price })) });
+  // Chỉ gợi ý link sản phẩm khi thật sự khớp với câu hỏi, và ưu tiên sản phẩm được AI nhắc tới
+  const mentioned = products.filter((p) => answer.toLowerCase().includes(p.name.toLowerCase()));
+  const suggestions = mentioned.length ? mentioned : matched ? [...products].sort((a, b) => b.score - a.score) : [];
+  res.json({ answer, products: suggestions.slice(0, 3).map(({ id, name, price }) => ({ id, name, price })) });
 }));
 
 // ===== Sinh mô tả sản phẩm (admin) =====

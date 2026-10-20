@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api, vnd, fmtDate } from '../api';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
+import QtyInput from '../components/QtyInput';
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -44,7 +45,7 @@ export default function ProductDetail() {
           <p className={p.stock > 0 ? 'ok' : 'error'}>{p.stock > 0 ? `Còn ${p.stock} sản phẩm` : 'Hết hàng'}</p>
           {p.stock > 0 && (
             <div className="row">
-              <input type="number" min="1" max={p.stock} value={qty} onChange={(e) => setQty(Math.max(1, Math.min(p.stock, Number(e.target.value))))} style={{ width: 80 }} />
+              <QtyInput value={qty} max={p.stock} onChange={setQty} style={{ width: 80 }} aria-label="Số lượng" />
               <button className="btn" onClick={() => add(p, qty)}>Thêm vào giỏ</button>
             </div>
           )}

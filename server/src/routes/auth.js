@@ -37,10 +37,11 @@ r.get('/me', requireAuth, wrap(async (req, res) => {
 
 r.put('/me', requireAuth, wrap(async (req, res) => {
   const { name, phone, address, password } = req.body;
+  // Kiểm tra trước khi lưu để không cập nhật dở dang
+  if (password && password.length < 6) throw httpError(400, 'Mật khẩu tối thiểu 6 ký tự');
   await query('UPDATE users SET name = COALESCE(?, name), phone = ?, address = ? WHERE id = ?',
     [name || null, phone || null, address || null, req.user.id]);
   if (password) {
-    if (password.length < 6) throw httpError(400, 'Mật khẩu tối thiểu 6 ký tự');
     await query('UPDATE users SET password_hash = ? WHERE id = ?', [bcrypt.hashSync(password, 10), req.user.id]);
   }
   const [user] = await query('SELECT * FROM users WHERE id = ?', [req.user.id]);

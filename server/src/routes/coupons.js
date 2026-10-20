@@ -23,14 +23,16 @@ r.post('/validate', wrap(async (req, res) => {
 }));
 
 r.get('/', requireStaff, wrap(async (_req, res) => {
-  res.json(await query('SELECT * FROM coupons ORDER BY id DESC'));
+  // expires_date dạng chuỗi YYYY-MM-DD để client không bị lệch ngày do múi giờ
+  res.json(await query(`SELECT *, DATE_FORMAT(expires_at, '%Y-%m-%d') AS expires_date FROM coupons ORDER BY id DESC`));
 }));
 
 const fields = (b) => {
   if (!b.code || !['percent', 'fixed'].includes(b.type) || !(Number(b.value) > 0)) throw httpError(400, 'Dữ liệu mã giảm giá không hợp lệ');
   if (b.type === 'percent' && Number(b.value) > 100) throw httpError(400, 'Phần trăm giảm tối đa 100');
   return [b.code.toUpperCase(), b.type, Number(b.value), Number(b.min_order) || 0, Number(b.max_uses) || 0,
-    b.expires_at || null, b.is_active === false || b.is_active === 0 ? 0 : 1];
+    // Mã còn hiệu lực đến hết ngày hết hạn
+    b.expires_at ? `${String(b.expires_at).slice(0, 10)} 23:59:59` : null, b.is_active === false || b.is_active === 0 ? 0 : 1];
 };
 
 r.post('/', requireStaff, wrap(async (req, res) => {

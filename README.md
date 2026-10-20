@@ -63,6 +63,10 @@ Tài khoản mẫu:
 └── docs/                 # tài liệu theo tuần
 ```
 
+## Ảnh sản phẩm
+
+Ảnh thật lấy từ Wikimedia Commons (giấy phép tự do), lưu tại `client/public/products/<id>.jpg`; nguồn và tác giả từng ảnh ghi trong [`client/public/products/CREDITS.md`](client/public/products/CREDITS.md). Một số sản phẩm dùng ảnh mẫu cùng hãng/dòng (đánh dấu "gần đúng") – cửa hàng có thể thay bằng ảnh tự chụp qua trang quản trị (ô "Ảnh (URL)"). Tải lại ảnh: `node server/scripts/download-images.js`.
+
 ## Tài liệu
 
 - [Tuần 2 – Công nghệ sử dụng](docs/tuan-2-cong-nghe.md)
