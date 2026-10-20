@@ -73,6 +73,21 @@ cd ..\client
 npm install
 ```
 
+### Cách khác: nạp dữ liệu bằng file `.sql` có sẵn (phpMyAdmin)
+
+Thay cho lệnh `npm run seed`, có thể nạp file **`database/salesflow.sql`** (đã có sẵn dữ liệu mẫu: 63 tài khoản, 38 sản phẩm, 548 đơn hàng, 186 đánh giá):
+
+1. Trong XAMPP Control Panel, **Start** cả **Apache** và **MySQL**.
+2. Mở trình duyệt vào **http://localhost/phpmyadmin**
+3. Bấm tab **Import** (Nhập) ở thanh trên cùng.
+4. Bấm **Choose File** → chọn file `database\salesflow.sql` trong thư mục dự án.
+5. Kéo xuống dưới bấm **Import** (Thực hiện). Thấy thông báo màu xanh là xong – bên trái sẽ xuất hiện database `salesflow`.
+
+Hoặc dùng dòng lệnh: `C:\xampp\mysql\bin\mysql -u root < database\salesflow.sql`
+
+> ⚠ File này sẽ **xóa và tạo lại** database `salesflow` nếu đã có.
+> Vẫn phải làm các bước `npm install` ở server và client (hoặc chạy `setup.bat` – nó cũng tự nạp dữ liệu nên không cần import nữa).
+
 ---
 
 ## PHẦN C – CHẠY WEB (mỗi lần sử dụng)
@@ -100,6 +115,8 @@ Mở 2 cửa sổ *Command Prompt*:
 | Quản trị viên | admin@salesflow.vn | admin123 |
 | Nhân viên | staff@salesflow.vn | staff123 |
 | Khách hàng | an@gmail.com | 123456 |
+
+(Tất cả 60 khách hàng mẫu đều có mật khẩu `123456`; xem danh sách email trong trang quản trị → Người dùng.)
 
 - **Trang bán hàng:** http://localhost:5173 – xem sản phẩm, thêm giỏ, đặt hàng, chat với trợ lý AI (nút 💬 góc phải dưới).
 - **Trang quản trị:** đăng nhập bằng tài khoản admin → tự chuyển vào trang quản trị (hoặc vào http://localhost:5173/admin).

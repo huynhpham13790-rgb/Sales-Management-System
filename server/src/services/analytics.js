@@ -41,7 +41,10 @@ export async function demandForecast({ historyDays = 60, horizon = 14 } = {}) {
     const dailyRate = weeklyForecast / 7;
     const daysLeft = dailyRate > 0 ? Math.floor(p.stock / dailyRate) : null;
     const reorder = Math.max(0, Math.ceil(forecast + p.low_stock_threshold - p.stock));
-    const trend = slope > 0.3 ? 'up' : slope < -0.3 ? 'down' : 'flat';
+    // Xu hướng theo tỉ lệ: mỗi tuần thay đổi > 5% so với mức bán trung bình
+    const mean = total / weeks.length;
+    const rel = mean > 0 ? slope / mean : 0;
+    const trend = rel > 0.05 ? 'up' : rel < -0.05 ? 'down' : 'flat';
     return { product_id: p.id, name: p.name, stock: p.stock, sold_history: total, weekly: weeks,
       forecast, days_left: daysLeft, reorder, trend };
   }).sort((a, b) => b.reorder - a.reorder || b.forecast - a.forecast);

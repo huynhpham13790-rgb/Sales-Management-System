@@ -51,7 +51,9 @@ await test('Danh sách danh mục', async () => { const r = await call('/categor
 await test('Tìm & lọc sản phẩm', async () => {
   const r = await call('/products?sort=best_selling&limit=5');
   expect(r.data.items.length > 0, 'rỗng');
-  product = r.data.items.find((p) => p.stock > 5);
+  // Giá ≥ 600k để đơn 2 sản phẩm đủ điều kiện mã WELCOME10 (đơn tối thiểu 1 triệu)
+  product = r.data.items.find((p) => p.stock > 5 && p.price >= 600000);
+  expect(product, 'không có sản phẩm phù hợp để test');
   return `${r.data.total} sản phẩm`;
 });
 await test('Chi tiết sản phẩm + gợi ý mua cùng', async () => {
